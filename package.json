@@ -1,0 +1,28 @@
+{
+  "name": "ndut-report",
+  "version": "0.6.0",
+  "description": "Report for Ndut Framework",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ardhi/ndut-report.git"
+  },
+  "keywords": [
+    "ndut",
+    "report",
+    "fastify"
+  ],
+  "author": "Ardhi Lukianto <ardhi@lukianto.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ardhi/ndut-report/issues"
+  },
+  "homepage": "https://github.com/ardhi/ndut-report#readme",
+  "dependencies": {
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.18.8/xlsx-0.18.8.tgz",
+    "xlsx-template": "^1.3.2"
+  }
+}

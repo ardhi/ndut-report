@@ -1,0 +1,3 @@
+{
+  "dependency": ["ndut-db", "ndut-api", "ndut-headless-browser"]
+}
