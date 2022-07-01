@@ -1,6 +1,6 @@
 {
   "name": "ndut-report",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "Report for Ndut Framework",
   "main": "index.js",
   "scripts": {
