@@ -1,7 +1,7 @@
 const path = require('path')
 const XlsxTemplate = require('xlsx-template')
 
-const createTemplate = async function ({ model, columns }) {
+const createDefTpl = async function ({ model, columns }) {
   const { getConfig, getNdutConfig, fs, _ } = this.ndut.helper
   const { generateId } = this.ndutDb.helper
   const config = getConfig()
@@ -36,7 +36,7 @@ module.exports = async function ({ model, params, filter, options = {} }) {
   let tpl = `${opts.dir}/ndutApi/export-tpl/${base}.xlsx`
   if (!fs.existsSync(tpl)) tpl = `${optsApp.dir}/ndutApi/export-tpl/override/${pascalCase(base)}.xlsx`
   if (!fs.existsSync(tpl)) {
-    tpl = await createTemplate.call(this, { model, columns: options.columns || [] })
+    tpl = await createDefTpl.call(this, { model, columns: options.columns || [] })
     options.columns = null
   }
   const data = await fs.readFile(tpl)

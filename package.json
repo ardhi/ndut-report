@@ -1,6 +1,6 @@
 {
   "name": "ndut-report",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Report for Ndut Framework",
   "main": "index.js",
   "scripts": {
@@ -22,6 +22,7 @@
   },
   "homepage": "https://github.com/ardhi/ndut-report#readme",
   "dependencies": {
+    "fluentreports": "^1.4.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.18.8/xlsx-0.18.8.tgz",
     "xlsx-template": "^1.3.2"
   }
