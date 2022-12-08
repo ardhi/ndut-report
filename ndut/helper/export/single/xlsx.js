@@ -1,5 +1,5 @@
-const path = require('path')
 const XlsxTemplate = require('xlsx-template')
+const getTplHook = require('../../../../lib/get-tpl-hook')
 
 const createDefTpl = async function ({ model, columns }) {
   const { getConfig, getNdutConfig, fs, _ } = this.ndut.helper
@@ -29,25 +29,24 @@ const createDefTpl = async function ({ model, columns }) {
 }
 
 module.exports = async function ({ model, params, filter, options = {} }) {
-  const { getNdutConfig, _, fs, aneka } = this.ndut.helper
-  const { pascalCase } = aneka
+  const { fs } = this.ndut.helper
   const { findOne } = this.ndutApi.helper
-  const schema = _.find(this.ndutDb.schemas, { name: model })
-  const opts = getNdutConfig(schema.ndut)
-  const optsApp = getNdutConfig('app')
-  const base = path.parse(schema.file).name + '-single'
-  let tpl = `${opts.dir}/ndutApi/export-tpl/${base}.xlsx`
-  if (!fs.existsSync(tpl)) tpl = `${optsApp.dir}/ndutApi/export-tpl/override/${pascalCase(base + ' single')}.xlsx`
-  if (!fs.existsSync(tpl)) {
+
+  let { tpl, hook } = getTplHook.call(this, model, true)
+  if (!tpl) {
     tpl = await createDefTpl.call(this, { model, columns: options.columns || [] })
     options.columns = null
   }
   options.noThrow = true
-  const data = await fs.readFile(tpl)
-  const content = new XlsxTemplate(data)
-  const optsApi = getNdutConfig('ndut-api')
+  const tplData = await fs.readFile(tpl)
+  const content = new XlsxTemplate(tplData)
   const result = await findOne({ model, params, filter, options })
-  const values = { data: (result || {}).data || {} }
+  let data = (result || {}).data || {}
+  if (hook) {
+    const mod = require(hook)
+    data = await mod.call(this, { model, params, filter, options, data })
+  }
+  const values = { data }
   content.substitute(1, values)
   return content.generate({ type: 'nodebuffer' })
 }

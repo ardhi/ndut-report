@@ -1,4 +1,6 @@
-const streaming = async function ({ input, model, params, filter, options = {} }) {
+const getTplHook = require('../../../lib/get-tpl-hook')
+
+const streaming = async function ({ input, model, params, filter, options = {}, hook }) {
   const { _, getNdutConfig } = this.ndut.helper
   const { find } = this.ndutApi.helper
   const cfg = getNdutConfig('ndut-api')
@@ -8,7 +10,8 @@ const streaming = async function ({ input, model, params, filter, options = {} }
   params.limit = batchSize
   for (;;) {
     params.skip = (page - 1) * batchSize
-    const { data } = await find({ model, params, filter, options })
+    let { data } = await find({ model, params, filter, options })
+    if (hook) data = await hook.call(this, { model, params, filter, options, data })
     if (data.length === 0) break
     data.forEach(input.write)
     page++
@@ -33,8 +36,9 @@ const buildStream = function () {
 module.exports = async function ({ model, params, filter, options = {} }) {
   const { scramjet } = this.ndut.helper
   const { DataStream } = scramjet
+  const { hook } = getTplHook.call(this, model)
   const input = buildStream.call(this)
-  streaming.call(this, { input, model, params, filter })
+  streaming.call(this, { input, model, params, filter, hook })
   const writer = buildStream.call(this)
   DataStream
     .from(input)
